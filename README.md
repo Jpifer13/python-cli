@@ -31,4 +31,4 @@ python pythonCLI.py --command '/opt/vc/bin/vcgencmd measure_temp' cmd
 This example outputs the CPU temperature for each device
 
 ## Author
-#Jake Pifer
+# Jake Pifer
