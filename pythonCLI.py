@@ -21,8 +21,7 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip):
     """
     CLI tool used for SSH into rpi 4's and using commands
     """
-    print(command)
-    print(bulk)
+
     ctx.obj['BULK'] = bulk
     if(new_ip):
         newDevice = {
@@ -51,7 +50,7 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip):
 @click.pass_context
 def testconn(ctx):
     """
-    Test connection to rpi at given ip address. This will currently print out the temperature that 
+    Test connection to rpi's'. This will currently print out the date if connected. 
     """
     # This loops through the dict of devices and connects and shows the temp for each one
     for key in ctx.obj:
@@ -73,7 +72,7 @@ def cmd(ctx):
     """
     This will loop through selected devices, bulk or individual, and do the command given to it.
     """
-    print(ctx.obj)
+
     # Check if bulk tag is absent or not
     if(ctx.obj['BULK']):
         # This loops through the dict of devices and runs the inputted command for each one
