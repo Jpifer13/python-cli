@@ -50,7 +50,7 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip):
 @click.pass_context
 def testconn(ctx):
     """
-    Test connection to rpi at given ip address. This will currently print out the temperature that 
+    Test connection to rpi's'. This will currently print out the date if connected. 
     """
     # This loops through the dict of devices and connects and shows the temp for each one
     for key in ctx.obj:
@@ -72,7 +72,7 @@ def cmd(ctx):
     """
     This will loop through selected devices, bulk or individual, and do the command given to it.
     """
-    
+
     # Check if bulk tag is absent or not
     if(ctx.obj['BULK']):
         # This loops through the dict of devices and runs the inputted command for each one
