@@ -4,13 +4,11 @@ This is a set of cli commands written to help bulk run cmd commands for  a clust
 
 ## Dependencies
 
-```bash
-# Paramiko
-pip install paramiko
+Paramiko
+```pip install paramiko```
 
-# Click
-pip install click
-```
+Click
+```pip install click```
 
 ## Running the code
 
