@@ -16,8 +16,9 @@ from values import *
 @click.option('--syspass', '-sp', help='The new system password')
 @click.option('--sysuser', '-su', help='The new system username')
 @click.option('--bulk', '-b', help='States whether this is a bulk action.', type=bool, default=False)
+@click.option('--newmas', '-nm', help='This tag is used if you are changing the master node ip.', default=master)
 @click.pass_context
-def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip):
+def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip, newmas):
     """
     CLI tool used for SSH into rpi 4's and using commands
     """
@@ -44,6 +45,29 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip):
         ctx.obj['SYSUSER'] = sysuser
     if(syspass):
         ctx.obj['SYSPASS'] = syspass
+    if(newmas != master):
+        ctx.obj['MASTER'] = newmas
+    elif(newmas == master):
+        ctx.obj['MASTER'] = master
+
+@cli.command()
+@click.pass_context
+def ping_nodes(ctx):
+    """
+    Ping all nodes and returns true is hits false if doesn't
+    """
+    print("tag")
+    for key in ctx.obj:
+        try:
+            response = os.system("ping -c 1 " + key)
+
+            if(response == 0):
+                print(key, "is up!")
+            else:
+                print(key, "is down!")
+        except:
+            print("Couldn't connect to: " + key)
+            pass
 
 
 @cli.command()
@@ -58,7 +82,7 @@ def testconn(ctx):
             ssh = connect(str(key), ctx.obj[str(key)]
                         ['USER'], ctx.obj[str(key)]['PASSWORD'])
 
-            stdout = ssh.exec_command(
+            stdin, stdout, stderr = ssh.exec_command(
                 'date')
 
             print(*stdout.readlines(), sep='\n')
@@ -101,6 +125,25 @@ def cmd(ctx):
             print("No IP address given and one is needed when not using bulk tag.")
 
 
+@cli.command()
+@click.pass_context
+def masdo(ctx):
+    """
+    This is for master node commands only
+    """
+    # This is to make sure login uses correct master node hostname in case we change master node
+    ctx.obj['MASTER']['USER'] = 'kmaster'
+    
+    try:
+        ssh = connect(ctx.obj['MASTER'], ctx.obj[ctx.obj['MASTER']]
+                        ['USER'], ctx.obj[ctx.obj['MASTER']]['PASSWORD'])
+
+        stdin, stdout, stderr = ssh.exec_command(str(ctx.obj['COMMAND']))
+
+        print(*stdout.readlines(), sep='\n')
+    except:
+        print("Could not connect to master node or invalid command. " + stderr)
+
 # @cli.command()
 # @click.pass_context
 # def supop(ctx):
@@ -117,15 +160,15 @@ def cmd(ctx):
 
 if __name__ == '__main__':
     cli(obj={
-        '192.168.1.12': {
-            'USER': user,
-            'PASSWORD': password
-        },
         '192.168.1.2': {
             'USER': user,
             'PASSWORD': password
         },
-        '192.168.1.6': {
+        '192.168.1.11': {
+            'USER': user,
+            'PASSWORD': password
+        },
+        '192.168.1.13': {
             'USER': user,
             'PASSWORD': password
         }
