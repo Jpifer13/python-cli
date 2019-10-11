@@ -50,6 +50,25 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip, newmas
     elif(newmas == master):
         ctx.obj['MASTER'] = master
 
+@cli.command()
+@click.pass_context
+def ping_nodes(ctx):
+    """
+    Ping all nodes and returns true is hits false if doesn't
+    """
+    print("tag")
+    for key in ctx.obj:
+        try:
+            response = os.system("ping -c 1 " + key)
+
+            if(response == 0):
+                print(key, "is up!")
+            else:
+                print(key, "is down!")
+        except:
+            print("Couldn't connect to: " + key)
+            pass
+
 
 @cli.command()
 @click.pass_context
@@ -63,7 +82,7 @@ def testconn(ctx):
             ssh = connect(str(key), ctx.obj[str(key)]
                         ['USER'], ctx.obj[str(key)]['PASSWORD'])
 
-            stdout = ssh.exec_command(
+            stdin, stdout, stderr = ssh.exec_command(
                 'date')
 
             print(*stdout.readlines(), sep='\n')
@@ -145,11 +164,11 @@ if __name__ == '__main__':
             'USER': user,
             'PASSWORD': password
         },
-        '192.168.1.6': {
+        '192.168.1.11': {
             'USER': user,
             'PASSWORD': password
         },
-        '192.168.1.12': {
+        '192.168.1.13': {
             'USER': user,
             'PASSWORD': password
         }
