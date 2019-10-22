@@ -52,22 +52,23 @@ def cli(ctx, ip, user, password, command, sysuser, syspass, bulk, new_ip, newmas
 
 @cli.command()
 @click.pass_context
-def ping_nodes(ctx):
+def pingnodes(ctx):
     """
     Ping all nodes and returns true is hits false if doesn't
     """
-    print("tag")
-    for key in ctx.obj:
-        try:
-            response = os.system("ping -c 1 " + key)
 
-            if(response == 0):
-                print(key, "is up!")
-            else:
-                print(key, "is down!")
-        except:
-            print("Couldn't connect to: " + key)
-            pass
+    for key in ctx.obj:
+        if(key != 'BULK' and key != "MASTER"):
+            try:
+                response = os.system("ping -c 1 " + key)
+
+                if(response == 0):
+                    print(key, "is up!")
+                else:
+                    print(key, "is down!")
+            except:
+                print("Couldn't connect to: " + key)
+                pass
 
 
 @cli.command()
